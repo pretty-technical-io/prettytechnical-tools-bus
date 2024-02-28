@@ -3,7 +3,7 @@
 **Bus** This package abstracts all the logic and configuration to create a connection with Kafka.
 ![Go](https://img.shields.io/badge/Golang-1.21-blue.svg?logo=go&longCache=true&style=flat)
 
-This package makes use of the external package [sarama](github.com/Shopify/sarama) and our [logger](gitlab.com/prettytechnical/tools/logger) package.
+This package makes use of the external package [franz](github.com/twmb/franz-go) and our [logger](gitlab.com/prettytechnical/tools/logger) package.
 
 
 ## Getting Started
