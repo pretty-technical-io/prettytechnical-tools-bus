@@ -21,16 +21,19 @@ type producer struct {
 
 // CreateProducer create and configure a new message sender.
 func CreateProducer(brokers, username, password string, retries int, isSSL bool, certsPath string, l logger.Logger) (*producer, error) {
-	tlsDialer, err := getDialerWithSSL(isSSL, certsPath, l)
-	if err != nil {
-		return nil, err
-	}
-
 	opts := []kgo.Opt{
 		kgo.SeedBrokers(strings.Split(brokers, ",")...),
 		// Configure TLS. Uses SystemCertPool for RootCAs by default.
-		kgo.Dialer(tlsDialer.DialContext),
 		kgo.RecordRetries(retries),
+	}
+
+	if isSSL || password != "" {
+		tlsDialer, err := getDialerWithSSL(isSSL, certsPath, l)
+		if err != nil {
+			return nil, err
+		}
+		// Configure TLS. Uses SystemCertPool for RootCAs by default.
+		opts = append(opts, kgo.Dialer(tlsDialer.DialContext))
 	}
 
 	// SASL Options.
