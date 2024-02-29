@@ -25,6 +25,7 @@ func CreateProducer(brokers, username, password string, retries int, isSSL bool,
 		kgo.SeedBrokers(strings.Split(brokers, ",")...),
 		// Configure TLS. Uses SystemCertPool for RootCAs by default.
 		kgo.RecordRetries(retries),
+		kgo.AllowAutoTopicCreation(),
 	}
 
 	if isSSL || password != "" {
