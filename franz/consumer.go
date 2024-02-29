@@ -31,18 +31,19 @@ type consumerGroup struct {
 
 // CreateConsumerGroup create and configure a new consumer group.
 func CreateConsumerGroup(brokers, cg, username, password string, isSSL bool, certsPath string, isOldest bool, l logger.Logger) (*consumerGroup, error) {
-	tlsDialer, err := getDialerWithSSL(isSSL, certsPath, l)
-	if err != nil {
-		return nil, err
-	}
-
 	opts := []kgo.Opt{
 		kgo.SeedBrokers(strings.Split(brokers, ",")...),
 		kgo.ConsumerGroup(cg),
 		// Configure TLS. Uses SystemCertPool for RootCAs by default.
-		kgo.Dialer(tlsDialer.DialContext),
 	}
-
+	if isSSL || password != "" {
+		tlsDialer, err := getDialerWithSSL(isSSL, certsPath, l)
+		if err != nil {
+			return nil, err
+		}
+		// Configure TLS. Uses SystemCertPool for RootCAs by default.
+		opts = append(opts, kgo.Dialer(tlsDialer.DialContext))
+	}
 	// SASL Options.
 	if password != "" {
 		opts = append(opts, kgo.SASL(scram.Sha512(func(ctx context.Context) (scram.Auth, error) {
