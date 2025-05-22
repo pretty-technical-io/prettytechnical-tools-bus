@@ -1,4 +1,4 @@
-module gitlab.com/prettytechnical-tools/bus
+module github.com/pretty-technical-io/prettytechnical-tools-bus
 
 go 1.21.1
 
